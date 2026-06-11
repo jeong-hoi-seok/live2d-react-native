@@ -1,32 +1,32 @@
 {
-  "editor.defaultFormatter": "biomejs.biome",
-  "editor.formatOnSave": true,
-  "editor.quickSuggestions": {
-    "strings": "on"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
-  },
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-  "tailwindCSS.experimental.configFile": "global.css",
-  "tailwindCSS.classFunctions": ["cn", "clsx", "cva", "tw"],
-  "tailwindCSS.includeLanguages": {
-    "typescript": "javascript",
-    "typescriptreact": "javascript"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/.expo": true,
-    "**/ios/Pods": true,
-    "**/android/.gradle": true,
-    "webview/dist": true
-  }
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
+	"editor.quickSuggestions": {
+		"strings": "on"
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"tailwindCSS.experimental.configFile": "src/global.css",
+	"tailwindCSS.classFunctions": ["cn", "clsx", "cva", "tw"],
+	"tailwindCSS.includeLanguages": {
+		"typescript": "javascript",
+		"typescriptreact": "javascript"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/.expo": true,
+		"**/ios/Pods": true,
+		"**/android/.gradle": true,
+		"webview/dist": true
+	}
 }

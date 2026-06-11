@@ -35,7 +35,7 @@ RN ↔ WebView 통신은 `postMessage` 기반 JSON 프로토콜. 모델 로드·
 ## Tech Stack
 
 ### Runtime
-- **Expo SDK 52+** (Managed workflow, 추후 Bare 전환 가능)
+- **Expo SDK 56** (Managed workflow, 추후 Bare 전환 가능)
 - **Expo Router v4** — file-based routing (Next.js App Router 유사)
 - **TypeScript** strict
 

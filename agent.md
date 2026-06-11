@@ -14,7 +14,7 @@
 
 | 영역 | 선택 | 비고 |
 |---|---|---|
-| Framework | Expo SDK 52+ Managed | Bare 전환 전까지 native code 직접 수정 금지 |
+| Framework | Expo SDK 56 Managed | Bare 전환 전까지 native code 직접 수정 금지 |
 | Routing | Expo Router v4 | file-based, `app/` 디렉토리 |
 | Language | TypeScript strict | `any` 금지, `unknown` 후 narrowing |
 | Styling | NativeWind v4 | Tailwind className. inline style 최소화 |
