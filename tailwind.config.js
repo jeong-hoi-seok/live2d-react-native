@@ -15,7 +15,24 @@ module.exports = {
           text: "#0f172a",
         },
       },
+      fontFamily: {
+        sans: ["Pretendard-Regular", "system-ui", "sans-serif"],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    ({ addUtilities }) => {
+      addUtilities({
+        ".font-medium": {
+          fontFamily: "Pretendard-Medium",
+        },
+        ".font-semibold": {
+          fontFamily: "Pretendard-SemiBold",
+        },
+        ".font-bold": {
+          fontFamily: "Pretendard-Bold",
+        },
+      });
+    },
+  ],
 };

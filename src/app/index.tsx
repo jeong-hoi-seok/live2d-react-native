@@ -1,11 +1,5 @@
-import { View } from "react-native";
-
-import { Live2dView } from "@/features/live2d-viewer";
+import { CharacterListScreen } from "@/features/characters";
 
 export default function Index() {
-  return (
-    <View className="flex-1 bg-app-background">
-      <Live2dView />
-    </View>
-  );
+  return <CharacterListScreen />;
 }
