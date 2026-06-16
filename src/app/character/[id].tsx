@@ -1,8 +1,8 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { ChevronLeft, Send } from "lucide-react-native";
+import { ChevronLeft, Play } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
-  KeyboardAvoidingView,
+  Keyboard,
   Platform,
   Pressable,
   ScrollView,
@@ -12,24 +12,44 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Live2dView } from "@/features/live2d-viewer";
+import { Live2dView, type Live2dViewHandle } from "@/features/live2d-viewer";
 
 type ChatMessage = {
   id: string;
   text: string;
 };
 
+const ANDROID_INPUT_STYLE =
+  Platform.OS === "android" ? ({ includeFontPadding: false } as const) : undefined;
+
+const isGreetingMessage = (text: string) => /안녕/.test(text);
+
 export default function CharacterRoom() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const live2dRef = useRef<Live2dViewHandle>(null);
   const scrollRef = useRef<ScrollView>(null);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
     if (messages.length === 0) return;
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
+
+  useEffect(() => {
+    const showEvt = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvt = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+    const showSub = Keyboard.addListener(showEvt, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener(hideEvt, () => setKeyboardHeight(0));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const handleSend = () => {
     const trimmed = input.trim();
@@ -37,13 +57,30 @@ export default function CharacterRoom() {
 
     setMessages((prev) => [...prev, { id: `${Date.now()}`, text: trimmed }]);
     setInput("");
+
+    if (isGreetingMessage(trimmed)) {
+      live2dRef.current?.sendCommand({ type: "greet" });
+    }
   };
+
+  const canSend = input.trim().length > 0;
+  const keyboardVisible = keyboardHeight > 0;
+  const bottomPadding = keyboardVisible ? keyboardHeight + 8 : insets.bottom + 12;
 
   return (
     <View className="flex-1 bg-app-background">
-      <Live2dView key={id} />
+      <Live2dView ref={live2dRef} key={id} />
 
       <View className="absolute inset-0" pointerEvents="box-none">
+        {keyboardVisible && (
+          <Pressable
+            onPress={Keyboard.dismiss}
+            accessibilityLabel="키보드 닫기"
+            accessible={false}
+            className="absolute inset-0"
+          />
+        )}
+
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
@@ -55,60 +92,57 @@ export default function CharacterRoom() {
           <ChevronLeft color="#000" size={28} />
         </Pressable>
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          className="flex-1 justify-end"
+        <View
+          className="absolute left-0 right-0 bottom-0 px-4"
+          style={{ paddingBottom: bottomPadding }}
           pointerEvents="box-none"
         >
-          <View
-            className="px-4"
-            style={{ paddingBottom: insets.bottom + 12 }}
-            pointerEvents="box-none"
-          >
-            {messages.length > 0 ? (
-              <ScrollView
-                ref={scrollRef}
-                className="mb-3 max-h-64"
-                contentContainerStyle={{ gap: 8 }}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-              >
-                {messages.map((message) => (
-                  <View key={message.id} className="max-w-[80%] self-end">
-                    <View className="rounded-2xl rounded-br-sm bg-black/75 px-4 py-2.5">
-                      <Text className="text-base text-white">{message.text}</Text>
-                    </View>
-                  </View>
-                ))}
-              </ScrollView>
-            ) : null}
+          {messages.length > 0 && (
+            <ScrollView
+              ref={scrollRef}
+              className="mb-3 max-h-64"
+              contentContainerStyle={{ gap: 8 }}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {messages.map((message) => (
+                <View
+                  key={message.id}
+                  className="max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75 px-4 py-2.5"
+                >
+                  <Text className="text-base text-white">{message.text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          )}
 
-            <View className="flex-row items-end gap-3">
-              <View className="flex-1 rounded-full border border-black/10 bg-white/90 px-4 py-2">
-                <TextInput
-                  value={input}
-                  onChangeText={setInput}
-                  placeholder="메시지를 입력하세요"
-                  placeholderTextColor="#94a3b8"
-                  className="max-h-24 py-2 text-base text-app-text"
-                  multiline
-                  maxLength={500}
-                  accessibilityLabel="채팅 메시지 입력"
-                />
-              </View>
-              <Pressable
-                onPress={handleSend}
-                disabled={!input.trim()}
-                accessibilityRole="button"
-                accessibilityLabel="메시지 보내기"
-                className="mb-2 active:opacity-70 disabled:opacity-40"
-                hitSlop={8}
-              >
-                <Send color="#000" size={24} />
-              </Pressable>
+          <View className="flex-row items-center gap-3">
+            <View className="flex-1 min-h-10 justify-center rounded-[20px] border border-black/10 bg-white/90 px-4 py-2">
+              <TextInput
+                value={input}
+                onChangeText={setInput}
+                placeholder="메시지를 입력하세요"
+                placeholderTextColor="#94a3b8"
+                className="w-full p-0 font-sans text-base leading-5 max-h-[60px] text-app-text"
+                multiline
+                scrollEnabled
+                maxLength={500}
+                accessibilityLabel="채팅 메시지 입력"
+                style={ANDROID_INPUT_STYLE}
+              />
             </View>
+            <Pressable
+              onPress={handleSend}
+              disabled={!canSend}
+              accessibilityRole="button"
+              accessibilityLabel="메시지 보내기"
+              className="active:opacity-70 disabled:opacity-40 rounded-full bg-orange-500 size-10 flex items-center justify-center"
+              hitSlop={8}
+            >
+              <Play color="white" size={16} />
+            </Pressable>
           </View>
-        </KeyboardAvoidingView>
+        </View>
       </View>
     </View>
   );

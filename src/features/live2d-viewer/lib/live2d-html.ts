@@ -46,17 +46,102 @@ export const LIVE2D_HTML = `<!DOCTYPE html>
       const model = await Live2DModel.from(MODEL_URL);
       app.stage.addChild(model);
 
-      // Fit model to view
-      const scale = Math.min(window.innerWidth / model.width, window.innerHeight / model.height) * 1.2;
-      model.scale.set(scale);
-      model.x = (window.innerWidth - model.width) / 2;
-      model.y = (window.innerHeight - model.height) / 2;
-
-      window.addEventListener('resize', () => {
-        const s = Math.min(window.innerWidth / (model.width / model.scale.x), window.innerHeight / (model.height / model.scale.y)) * 1.2;
-        model.scale.set(s);
+      const fitModel = () => {
+        const scale = Math.min(window.innerWidth / model.width, window.innerHeight / model.height) * 1.2;
+        model.scale.set(scale);
         model.x = (window.innerWidth - model.width) / 2;
         model.y = (window.innerHeight - model.height) / 2;
+      };
+      fitModel();
+      window.addEventListener('resize', fitModel);
+
+      const motionManager = model.internalModel.motionManager;
+      let greetPlaying = false;
+
+      const playIdle = () => model.motion('Idle', 0);
+
+      const waitForMotionEnd = () =>
+        new Promise((resolve) => {
+          const onFinish = () => {
+            motionManager.off('motionFinish', onFinish);
+            resolve();
+          };
+          motionManager.on('motionFinish', onFinish);
+          setTimeout(() => {
+            motionManager.off('motionFinish', onFinish);
+            resolve();
+          }, 6000);
+        });
+
+      const MotionPriority = (PIXI.live2d && PIXI.live2d.MotionPriority) || { FORCE: 3 };
+
+      const resetExpression = () => {
+        const expressionManager = model.internalModel.motionManager.expressionManager;
+        if (expressionManager && typeof expressionManager.resetExpression === 'function') {
+          expressionManager.resetExpression();
+        }
+      };
+
+      const playGreet = async () => {
+        if (greetPlaying) return;
+        greetPlaying = true;
+        try {
+          model.expression('exp_02');
+          const started = await model.motion('', 0, MotionPriority.FORCE);
+          log('greet motion started: ' + started);
+          if (!started) {
+            resetExpression();
+            greetPlaying = false;
+            playIdle();
+            return;
+          }
+          await waitForMotionEnd();
+          resetExpression();
+          playIdle();
+        } catch (commandError) {
+          log('greet failed: ' + (commandError && commandError.message ? commandError.message : commandError));
+          resetExpression();
+        } finally {
+          greetPlaying = false;
+        }
+      };
+
+      const handleCommand = async (raw) => {
+        try {
+          const command = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (!command || !command.type) return;
+
+          if (command.type === 'greet') {
+            await playGreet();
+            return;
+          }
+
+          if (command.type === 'motion') {
+            await model.motion(command.group, command.index ?? 0);
+            return;
+          }
+
+          if (command.type === 'expression') {
+            model.expression(command.name);
+          }
+        } catch (commandError) {
+          log('cmd failed: ' + (commandError && commandError.message ? commandError.message : commandError));
+        }
+      };
+
+      const onBridgeMessage = (event) => {
+        const payload = event?.data;
+        if (typeof payload !== 'string' || !payload.startsWith('{')) return;
+        handleCommand(payload);
+      };
+
+      window.addEventListener('message', onBridgeMessage);
+      document.addEventListener('message', onBridgeMessage);
+      window.handleLive2dCommand = handleCommand;
+
+      playIdle();
+      motionManager.on('motionFinish', () => {
+        if (!greetPlaying) playIdle();
       });
 
       log('ok');
