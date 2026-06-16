@@ -1,0 +1,1 @@
+{"Version": 3, "FileReferences": {"Moc": "cha3.moc3", "Textures": ["cha3.4096/texture_00.png", "cha3.4096/texture_01.png", "cha3.4096/texture_02.png"], "Physics": "cha3.physics3.json", "DisplayInfo": "cha3.cdi3.json"}, "Groups": [{"Target": "Parameter", "Name": "EyeBlink", "Ids": []}, {"Target": "Parameter", "Name": "LipSync", "Ids": []}]}

@@ -17,6 +17,7 @@ import { Live2dView, type Live2dViewHandle } from "@/features/live2d-viewer";
 type ChatMessage = {
   id: string;
   text: string;
+  role: "user" | "bot";
 };
 
 const ANDROID_INPUT_STYLE =
@@ -55,10 +56,17 @@ export default function CharacterRoom() {
     const trimmed = input.trim();
     if (!trimmed) return;
 
-    setMessages((prev) => [...prev, { id: `${Date.now()}`, text: trimmed }]);
+    const now = Date.now();
+    const greeting = isGreetingMessage(trimmed);
+
+    setMessages((prev) => [
+      ...prev,
+      { id: `${now}-u`, text: trimmed, role: "user" },
+      ...(greeting ? [{ id: `${now}-b`, text: "안녕, 반가워", role: "bot" as const }] : []),
+    ]);
     setInput("");
 
-    if (isGreetingMessage(trimmed)) {
+    if (greeting) {
       live2dRef.current?.sendCommand({ type: "greet" });
     }
   };
@@ -69,7 +77,7 @@ export default function CharacterRoom() {
 
   return (
     <View className="flex-1 bg-app-background">
-      <Live2dView ref={live2dRef} key={id} />
+      <Live2dView ref={live2dRef} key={id} modelId={id} />
 
       <View className="absolute inset-0" pointerEvents="box-none">
         {keyboardVisible && (
@@ -105,14 +113,23 @@ export default function CharacterRoom() {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
-              {messages.map((message) => (
-                <View
-                  key={message.id}
-                  className="max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75 px-4 py-2.5"
-                >
-                  <Text className="text-base text-white">{message.text}</Text>
-                </View>
-              ))}
+              {messages.map((message) =>
+                message.role === "user" ? (
+                  <View
+                    key={message.id}
+                    className="max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75 px-4 py-2.5"
+                  >
+                    <Text className="text-base text-white">{message.text}</Text>
+                  </View>
+                ) : (
+                  <View
+                    key={message.id}
+                    className="max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-orange-500 px-4 py-2.5"
+                  >
+                    <Text className="text-base text-white">{message.text}</Text>
+                  </View>
+                ),
+              )}
             </ScrollView>
           )}
 

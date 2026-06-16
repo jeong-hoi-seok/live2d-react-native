@@ -6,7 +6,7 @@ export const LIVE2D_HTML = `<!DOCTYPE html>
 <style>
   html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent; overflow: hidden; }
   #canvas { display: block; width: 100%; height: 100%; }
-  #status { position: fixed; top: 8px; left: 8px; right: 8px; color: #333; font: 12px -apple-system, sans-serif; background: rgba(255,255,255,0.6); padding: 4px 8px; border-radius: 4px; pointer-events: none; }
+  #status { display: none; }
 </style>
 </head>
 <body>
@@ -23,6 +23,7 @@ export const LIVE2D_HTML = `<!DOCTYPE html>
   window.onerror = (msg, src, line, col, err) => log('ERR: ' + msg + ' @ ' + line + ':' + col);
 
   const MODEL_URL = "__MODEL_URL__";
+  const FIT_SCALE = Number("__FIT_SCALE__") || 1.2;
 
   (async () => {
     try {
@@ -45,12 +46,21 @@ export const LIVE2D_HTML = `<!DOCTYPE html>
       log('probe model3.json -> ' + probe);
       const model = await Live2DModel.from(MODEL_URL);
       app.stage.addChild(model);
+      log('model loaded w=' + model.width + ' h=' + model.height);
 
       const fitModel = () => {
-        const scale = Math.min(window.innerWidth / model.width, window.innerHeight / model.height) * 1.2;
+        model.scale.set(1);
+        const baseW = model.width;
+        const baseH = model.height;
+        if (!baseW || !baseH) {
+          log('WARN model size 0: ' + baseW + 'x' + baseH);
+          return;
+        }
+        const scale = Math.min(window.innerWidth / baseW, window.innerHeight / baseH) * FIT_SCALE;
         model.scale.set(scale);
         model.x = (window.innerWidth - model.width) / 2;
         model.y = (window.innerHeight - model.height) / 2;
+        log('fit scale=' + scale.toFixed(3) + ' pos=' + model.x.toFixed(0) + ',' + model.y.toFixed(0));
       };
       fitModel();
       window.addEventListener('resize', fitModel);

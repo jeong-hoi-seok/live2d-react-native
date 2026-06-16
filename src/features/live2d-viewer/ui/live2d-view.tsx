@@ -9,7 +9,14 @@ export type Live2dViewHandle = {
   sendCommand: (command: Live2dCommand) => void;
 };
 
-export const Live2dView = forwardRef<Live2dViewHandle>(function Live2dView(_, ref) {
+export type Live2dViewProps = {
+  modelId?: string;
+};
+
+export const Live2dView = forwardRef<Live2dViewHandle, Live2dViewProps>(function Live2dView(
+  props,
+  ref,
+) {
   if (Platform.OS === "web") {
     return (
       <View className="flex-1 items-center justify-center bg-white p-4">
@@ -20,14 +27,18 @@ export const Live2dView = forwardRef<Live2dViewHandle>(function Live2dView(_, re
     );
   }
 
-  return <Live2dViewNative ref={ref} />;
+  return <Live2dViewNative ref={ref} modelId={props.modelId} />;
 });
 
-const Live2dViewNative = forwardRef<Live2dViewHandle>(function Live2dViewNative(_, ref) {
+const Live2dViewNative = forwardRef<Live2dViewHandle, Live2dViewProps>(function Live2dViewNative(
+  { modelId },
+  ref,
+) {
   const webViewRef = useRef<WebView>(null);
   const [bundle, setBundle] = useState<BootstrapResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [webViewReady, setWebViewReady] = useState(false);
+  const [runtimeError, setRuntimeError] = useState<string | null>(null);
   const pendingCommandsRef = useRef<Live2dCommand[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -43,7 +54,11 @@ const Live2dViewNative = forwardRef<Live2dViewHandle>(function Live2dViewNative(
 
   useEffect(() => {
     let cancelled = false;
-    bootstrapModel()
+    setBundle(null);
+    setError(null);
+    setWebViewReady(false);
+    setRuntimeError(null);
+    bootstrapModel(modelId)
       .then((res) => {
         if (!cancelled) setBundle(res);
       })
@@ -53,7 +68,7 @@ const Live2dViewNative = forwardRef<Live2dViewHandle>(function Live2dViewNative(
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [modelId]);
 
   const flushPendingCommands = () => {
     if (!webViewRef.current || pendingCommandsRef.current.length === 0) return;
@@ -68,6 +83,14 @@ const Live2dViewNative = forwardRef<Live2dViewHandle>(function Live2dViewNative(
     return (
       <View className="flex-1 items-center justify-center bg-white p-4">
         <Text className="text-base text-red-600">bootstrap 실패: {error}</Text>
+      </View>
+    );
+  }
+
+  if (runtimeError) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white p-4">
+        <Text className="text-base text-red-600">{runtimeError}</Text>
       </View>
     );
   }
@@ -98,7 +121,13 @@ const Live2dViewNative = forwardRef<Live2dViewHandle>(function Live2dViewNative(
         setWebViewReady(true);
         flushPendingCommands();
       }}
-      onMessage={(e) => console.log("[live2d webview]", e.nativeEvent.data)}
+      onMessage={(e) => {
+        const msg = e.nativeEvent.data;
+        console.log("[live2d webview]", msg);
+        if (msg.startsWith("FATAL:") || msg.startsWith("ERR:")) {
+          setRuntimeError(msg);
+        }
+      }}
     />
   );
 });
