@@ -34,21 +34,26 @@ export const LIVE2D_HTML = `<!DOCTYPE html>
         resizeTo: window,
         backgroundAlpha: 0,
         antialias: true,
+        resolution: window.devicePixelRatio || 2,
+        autoDensity: true,
+        powerPreference: 'high-performance',
       });
 
-      log('load model');
+      log('load model: ' + MODEL_URL);
       const Live2DModel = PIXI.live2d.Live2DModel;
+      const probe = await fetch(MODEL_URL).then((r) => r.status + ' ' + r.statusText).catch((e) => 'fetch fail: ' + e.message);
+      log('probe model3.json -> ' + probe);
       const model = await Live2DModel.from(MODEL_URL);
       app.stage.addChild(model);
 
       // Fit model to view
-      const scale = Math.min(window.innerWidth / model.width, window.innerHeight / model.height) * 0.9;
+      const scale = Math.min(window.innerWidth / model.width, window.innerHeight / model.height) * 1.2;
       model.scale.set(scale);
       model.x = (window.innerWidth - model.width) / 2;
       model.y = (window.innerHeight - model.height) / 2;
 
       window.addEventListener('resize', () => {
-        const s = Math.min(window.innerWidth / (model.width / model.scale.x), window.innerHeight / (model.height / model.scale.y)) * 0.9;
+        const s = Math.min(window.innerWidth / (model.width / model.scale.x), window.innerHeight / (model.height / model.scale.y)) * 1.2;
         model.scale.set(s);
         model.x = (window.innerWidth - model.width) / 2;
         model.y = (window.innerHeight - model.height) / 2;

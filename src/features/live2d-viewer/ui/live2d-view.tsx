@@ -54,7 +54,7 @@ function Live2dViewNative() {
 
   return (
     <WebView
-      source={{ html: bundle.html, baseUrl: bundle.baseUrl }}
+      source={{ uri: bundle.htmlUri }}
       originWhitelist={["*"]}
       allowFileAccess
       allowFileAccessFromFileURLs
