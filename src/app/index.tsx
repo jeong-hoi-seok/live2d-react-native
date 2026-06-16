@@ -1,18 +1,11 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+
+import { Live2dView } from "@/features/live2d-viewer";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "tomato",
-      }}
-    >
-      <Text style={{ color: "white", fontSize: 24, fontWeight: "bold" }}>
-        Hello Live2D
-      </Text>
+    <View className="flex-1 bg-app-background">
+      <Live2dView />
     </View>
   );
 }
