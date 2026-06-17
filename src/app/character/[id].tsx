@@ -1,7 +1,10 @@
+import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { ChevronLeft, Play } from "lucide-react-native";
+import { ChevronLeft, ImagePlus, Play } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
+  Alert,
+  Image,
   Keyboard,
   Platform,
   Pressable,
@@ -16,8 +19,9 @@ import { Live2dView, type Live2dViewHandle } from "@/features/live2d-viewer";
 
 type ChatMessage = {
   id: string;
-  text: string;
   role: "user" | "bot";
+  text?: string;
+  imageUri?: string;
 };
 
 const ANDROID_INPUT_STYLE =
@@ -71,6 +75,30 @@ export default function CharacterRoom() {
     }
   };
 
+  const handlePickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert(
+        "권한 필요",
+        "사진 첨부를 위해 갤러리 접근 권한이 필요합니다. 설정에서 허용해주세요.",
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsMultipleSelection: false,
+      quality: 0.8,
+    });
+
+    if (result.canceled || !result.assets[0]) return;
+
+    setMessages((prev) => [
+      ...prev,
+      { id: `${Date.now()}-u-img`, role: "user", imageUri: result.assets[0].uri },
+    ]);
+  };
+
   const canSend = input.trim().length > 0;
   const keyboardVisible = keyboardHeight > 0;
   const bottomPadding = keyboardVisible ? keyboardHeight + 8 : insets.bottom + 12;
@@ -113,27 +141,43 @@ export default function CharacterRoom() {
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
-              {messages.map((message) =>
-                message.role === "user" ? (
-                  <View
-                    key={message.id}
-                    className="max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75 px-4 py-2.5"
-                  >
+              {messages.map((message) => {
+                const isUser = message.role === "user";
+                const bubbleClass = isUser
+                  ? "max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75"
+                  : "max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-orange-500";
+
+                if (message.imageUri) {
+                  return (
+                    <View key={message.id} className={`${bubbleClass} overflow-hidden p-1`}>
+                      <Image
+                        source={{ uri: message.imageUri }}
+                        className="h-48 w-48 rounded-xl"
+                        resizeMode="cover"
+                      />
+                    </View>
+                  );
+                }
+
+                return (
+                  <View key={message.id} className={`${bubbleClass} px-4 py-2.5`}>
                     <Text className="text-base text-white">{message.text}</Text>
                   </View>
-                ) : (
-                  <View
-                    key={message.id}
-                    className="max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-orange-500 px-4 py-2.5"
-                  >
-                    <Text className="text-base text-white">{message.text}</Text>
-                  </View>
-                ),
-              )}
+                );
+              })}
             </ScrollView>
           )}
 
           <View className="flex-row items-center gap-3">
+            <Pressable
+              onPress={handlePickImage}
+              accessibilityRole="button"
+              accessibilityLabel="이미지 첨부"
+              className="active:opacity-70 size-10 flex items-center justify-center rounded-full bg-white/90"
+              hitSlop={8}
+            >
+              <ImagePlus color="#1a1a1a" size={20} />
+            </Pressable>
             <View className="flex-1 min-h-10 justify-center rounded-[20px] border border-black/10 bg-white/90 px-4 py-2">
               <TextInput
                 value={input}

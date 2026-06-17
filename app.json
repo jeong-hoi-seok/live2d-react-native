@@ -38,7 +38,13 @@
         }
       ],
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "캐릭터와 공유할 사진을 선택하기 위해 갤러리 접근이 필요합니다."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": false
