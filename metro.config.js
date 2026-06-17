@@ -3,6 +3,17 @@ const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
-config.resolver.assetExts = [...config.resolver.assetExts, "moc3"];
+const { transformer, resolver } = config;
+
+config.transformer = {
+  ...transformer,
+  babelTransformerPath: require.resolve("react-native-svg-transformer/expo"),
+};
+
+config.resolver = {
+  ...resolver,
+  assetExts: [...resolver.assetExts.filter((ext) => ext !== "svg"), "moc3"],
+  sourceExts: [...resolver.sourceExts, "svg"],
+};
 
 module.exports = withNativeWind(config, { input: "./global.css" });

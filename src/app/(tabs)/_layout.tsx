@@ -1,8 +1,10 @@
 import { Tabs } from "expo-router";
-import { Home, MessageCircle, User } from "lucide-react-native";
+import HomeIcon from "../../../assets/icons/home.svg";
+import PersonIcon from "../../../assets/icons/person.svg";
+import SmsIcon from "../../../assets/icons/sms.svg";
 
-const ACTIVE = "#ffffff";
-const INACTIVE = "#71717a";
+const ACTIVE = "#dadada";
+const INACTIVE = "#7f7f7f";
 
 export default function TabsLayout() {
   return (
@@ -11,9 +13,15 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: ACTIVE,
         tabBarInactiveTintColor: INACTIVE,
+        tabBarIconStyle: {
+          marginBottom: 4,
+        },
         tabBarStyle: {
-          backgroundColor: "#1b1b1f",
-          borderTopColor: "#27272a",
+          backgroundColor: "#1f1f1f",
+          paddingTop: 8,
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
         },
       }}
     >
@@ -21,21 +29,21 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "홈",
-          tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <HomeIcon width={size} height={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="chat"
         options={{
           title: "대화",
-          tabBarIcon: ({ color, size }) => <MessageCircle color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => <SmsIcon width={size} height={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: "마이페이지",
-          tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
+          title: "MY",
+          tabBarIcon: ({ color, size }) => <PersonIcon width={size} height={size} color={color} />,
         }}
       />
     </Tabs>

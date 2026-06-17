@@ -57,23 +57,19 @@ pnpm install
 pnpm expo start
 ```
 
-iOS 실행:
+iOS 네이티브 빌드(첫 빌드 또는 네이티브 변경 후):
 
 ```sh
-pnpm expo start --ios
+pnpm ios
 ```
 
-Android 실행:
+Android 네이티브 빌드:
 
 ```sh
-pnpm expo start --android
+pnpm android
 ```
 
-웹 실행:
-
-```sh
-pnpm expo start --web
-```
+> 웹은 지원하지 않습니다. 모바일(iOS/Android) 전용 앱입니다.
 
 ## 🧪 검증 명령
 
