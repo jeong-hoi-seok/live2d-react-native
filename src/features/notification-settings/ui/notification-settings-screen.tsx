@@ -3,9 +3,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { Linking, Pressable, ScrollView, Switch, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { DESIGN_COLORS, DESIGN_SPACING } from "@/shared/lib/design-system";
+
 import { useNotificationSettingsStore } from "../model/use-notification-settings-store";
 
-const SWITCH_TRACK_COLOR = { false: "#3a3a3a", true: "#facc15" } as const;
+const SWITCH_TRACK_COLOR = {
+  false: DESIGN_COLORS.surfaceContainerHighest,
+  true: DESIGN_COLORS.primary,
+} as const;
 
 export function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -21,10 +26,10 @@ export function NotificationSettingsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#1a1a1a]">
+    <View className="flex-1 bg-app-background">
       <View
-        style={{ paddingTop: insets.top + 8, paddingHorizontal: 14 }}
-        className="flex-row items-center bg-[#1a1a1a] pb-3"
+        style={{ paddingTop: insets.top + 12, paddingHorizontal: DESIGN_SPACING.containerPadding }}
+        className="flex-row items-center bg-app-background pb-5"
       >
         <Pressable
           onPress={() => router.back()}
@@ -33,15 +38,15 @@ export function NotificationSettingsScreen() {
           className="mr-2 p-1 active:opacity-70"
           hitSlop={12}
         >
-          <ChevronLeft size={28} color="#dadada" />
+          <ChevronLeft size={28} color={DESIGN_COLORS.onSurface} />
         </Pressable>
-        <Text className="text-xl font-bold text-[#dadada]">알림 설정</Text>
+        <Text className="text-xl font-bold text-app-on-surface">알림 설정</Text>
       </View>
 
       <ScrollView
         contentContainerStyle={{
           paddingBottom: insets.bottom + 32,
-          paddingHorizontal: 14,
+          paddingHorizontal: DESIGN_SPACING.containerPadding,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -73,15 +78,15 @@ export function NotificationSettingsScreen() {
             onPress={handleOpenSystemSettings}
             accessibilityRole="button"
             accessibilityLabel="시스템 알림 설정 열기"
-            className="flex-row items-center px-4 py-4 active:bg-[#2a2a2a]"
+            className="flex-row items-center px-4 py-4 active:bg-app-surface-container-high"
           >
             <View className="flex-1">
-              <Text className="text-base text-[#dadada]">시스템 알림 설정</Text>
-              <Text className="mt-1 text-xs text-[#7f7f7f]">
+              <Text className="text-base text-app-on-surface">시스템 알림 설정</Text>
+              <Text className="mt-1 text-xs text-app-on-surface-variant">
                 기기 설정에서 알림 권한을 변경할 수 있습니다
               </Text>
             </View>
-            <ChevronRight size={18} color="#5a5a5a" />
+            <ChevronRight size={18} color={DESIGN_COLORS.outline} />
           </Pressable>
         </Section>
       </ScrollView>
@@ -92,8 +97,8 @@ export function NotificationSettingsScreen() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="mt-6">
-      <Text className="mb-3 text-xs font-semibold text-[#7f7f7f]">{title}</Text>
-      <View className="overflow-hidden rounded-2xl bg-[#1f1f1f]">{children}</View>
+      <Text className="mb-3 text-xs font-semibold text-app-on-surface-variant">{title}</Text>
+      <View className="overflow-hidden rounded-3xl bg-app-surface-container">{children}</View>
     </View>
   );
 }
@@ -112,14 +117,14 @@ function ToggleRow({
   return (
     <View className="flex-row items-center px-4 py-4">
       <View className="mr-3 flex-1">
-        <Text className="text-base text-[#dadada]">{label}</Text>
-        <Text className="mt-1 text-xs text-[#7f7f7f]">{description}</Text>
+        <Text className="text-base text-app-on-surface">{label}</Text>
+        <Text className="mt-1 text-xs text-app-on-surface-variant">{description}</Text>
       </View>
       <Switch
         value={value}
         onValueChange={onValueChange}
         trackColor={SWITCH_TRACK_COLOR}
-        thumbColor="#dadada"
+        thumbColor={DESIGN_COLORS.onSurface}
         accessibilityLabel={label}
       />
     </View>
@@ -127,5 +132,5 @@ function ToggleRow({
 }
 
 function Divider() {
-  return <View className="ml-4 h-px bg-[#2a2a2a]" />;
+  return <View className="ml-4 h-px bg-app-outline-variant" />;
 }

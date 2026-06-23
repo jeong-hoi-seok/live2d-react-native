@@ -2,6 +2,8 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "re
 import { ActivityIndicator, Platform, Text, View } from "react-native";
 import WebView from "react-native-webview";
 
+import { DESIGN_COLORS } from "@/shared/lib/design-system";
+
 import { type BootstrapResult, bootstrapModel } from "../lib/bootstrap-model";
 import type { Live2dCommand } from "../lib/live2d-commands";
 
@@ -13,22 +15,21 @@ export type Live2dViewProps = {
   modelId?: string;
 };
 
-export const Live2dView = forwardRef<Live2dViewHandle, Live2dViewProps>(function Live2dView(
-  props,
-  ref,
-) {
-  if (Platform.OS === "web") {
-    return (
-      <View className="flex-1 items-center justify-center bg-white p-4">
-        <Text className="text-center text-base text-gray-600">
-          Live2D 뷰는 iOS / Android에서만 동작합니다. (웹 미지원)
-        </Text>
-      </View>
-    );
-  }
+export const Live2dView = forwardRef<Live2dViewHandle, Live2dViewProps>(
+  function Live2dView(props, ref) {
+    if (Platform.OS === "web") {
+      return (
+        <View className="flex-1 items-center justify-center bg-app-background p-4">
+          <Text className="text-center text-base text-app-on-surface-variant">
+            Live2D 뷰는 iOS / Android에서만 동작합니다. (웹 미지원)
+          </Text>
+        </View>
+      );
+    }
 
-  return <Live2dViewNative ref={ref} modelId={props.modelId} />;
-});
+    return <Live2dViewNative ref={ref} modelId={props.modelId} />;
+  },
+);
 
 const Live2dViewNative = forwardRef<Live2dViewHandle, Live2dViewProps>(function Live2dViewNative(
   { modelId },
@@ -81,25 +82,25 @@ const Live2dViewNative = forwardRef<Live2dViewHandle, Live2dViewProps>(function 
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-white p-4">
-        <Text className="text-base text-red-600">bootstrap 실패: {error}</Text>
+      <View className="flex-1 items-center justify-center bg-app-background p-4">
+        <Text className="text-base text-app-error">bootstrap 실패: {error}</Text>
       </View>
     );
   }
 
   if (runtimeError) {
     return (
-      <View className="flex-1 items-center justify-center bg-white p-4">
-        <Text className="text-base text-red-600">{runtimeError}</Text>
+      <View className="flex-1 items-center justify-center bg-app-background p-4">
+        <Text className="text-base text-app-error">{runtimeError}</Text>
       </View>
     );
   }
 
   if (!bundle) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator />
-        <Text className="mt-2 text-sm text-gray-500">모델 파일 준비 중…</Text>
+      <View className="flex-1 items-center justify-center bg-app-background">
+        <ActivityIndicator color={DESIGN_COLORS.primary} />
+        <Text className="mt-2 text-sm text-app-on-surface-variant">모델 파일 준비 중...</Text>
       </View>
     );
   }

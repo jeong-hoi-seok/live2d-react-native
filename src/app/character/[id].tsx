@@ -16,6 +16,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Live2dView, type Live2dViewHandle } from "@/features/live2d-viewer";
+import { DESIGN_COLORS } from "@/shared/lib/design-system";
 
 type ChatMessage = {
   id: string;
@@ -121,11 +122,11 @@ export default function CharacterRoom() {
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel="뒤로 가기"
-          className="absolute active:opacity-70"
+          className="absolute h-11 w-11 items-center justify-center rounded-full bg-app-surface-container-high/90 active:opacity-70"
           style={{ top: insets.top + 8, left: 16 }}
           hitSlop={12}
         >
-          <ChevronLeft color="#000" size={28} />
+          <ChevronLeft color={DESIGN_COLORS.onSurface} size={28} />
         </Pressable>
 
         <View
@@ -144,8 +145,8 @@ export default function CharacterRoom() {
               {messages.map((message) => {
                 const isUser = message.role === "user";
                 const bubbleClass = isUser
-                  ? "max-w-[80%] self-end rounded-2xl rounded-br-sm bg-black/75"
-                  : "max-w-[80%] self-start rounded-2xl rounded-bl-sm bg-orange-500";
+                  ? "max-w-[80%] self-end rounded-3xl rounded-br-md bg-app-primary"
+                  : "max-w-[80%] self-start rounded-3xl rounded-bl-md bg-app-surface-container-high";
 
                 if (message.imageUri) {
                   return (
@@ -161,7 +162,13 @@ export default function CharacterRoom() {
 
                 return (
                   <View key={message.id} className={`${bubbleClass} px-4 py-2.5`}>
-                    <Text className="text-base text-white">{message.text}</Text>
+                    <Text
+                      className={
+                        isUser ? "text-base text-app-on-primary" : "text-base text-app-on-surface"
+                      }
+                    >
+                      {message.text}
+                    </Text>
                   </View>
                 );
               })}
@@ -173,18 +180,18 @@ export default function CharacterRoom() {
               onPress={handlePickImage}
               accessibilityRole="button"
               accessibilityLabel="이미지 첨부"
-              className="active:opacity-70 size-10 flex items-center justify-center rounded-full bg-white/90"
+              className="active:opacity-70 flex size-10 items-center justify-center rounded-full bg-app-surface-container-high/95"
               hitSlop={8}
             >
-              <ImagePlus color="#1a1a1a" size={20} />
+              <ImagePlus color={DESIGN_COLORS.onSurfaceVariant} size={20} />
             </Pressable>
-            <View className="flex-1 min-h-10 justify-center rounded-[20px] border border-black/10 bg-white/90 px-4 py-2">
+            <View className="min-h-10 flex-1 justify-center rounded-full border border-app-outline-variant bg-app-surface-container-high/95 px-4 py-2">
               <TextInput
                 value={input}
                 onChangeText={setInput}
                 placeholder="메시지를 입력하세요"
-                placeholderTextColor="#94a3b8"
-                className="w-full p-0 font-sans text-base leading-5 max-h-[60px] text-app-text"
+                placeholderTextColor={DESIGN_COLORS.outline}
+                className="max-h-[60px] w-full p-0 font-sans text-base leading-5 text-app-on-surface"
                 multiline
                 scrollEnabled
                 maxLength={500}
@@ -197,10 +204,10 @@ export default function CharacterRoom() {
               disabled={!canSend}
               accessibilityRole="button"
               accessibilityLabel="메시지 보내기"
-              className="active:opacity-70 disabled:opacity-40 rounded-full bg-orange-500 size-10 flex items-center justify-center"
+              className="active:opacity-70 disabled:opacity-40 flex size-10 items-center justify-center rounded-full bg-app-primary"
               hitSlop={8}
             >
-              <Play color="white" size={16} />
+              <Play color={DESIGN_COLORS.onPrimary} size={16} />
             </Pressable>
           </View>
         </View>

@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "live2d-react-native",
-    "backgroundColor": "#1a1a1a",
+    "backgroundColor": "#101415",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
@@ -35,7 +35,7 @@
         {
           "image": "./assets/images/splash-full.png",
           "enableFullScreenImage_legacy": true,
-          "backgroundColor": "#272727"
+          "backgroundColor": "#101415"
         }
       ],
       "expo-asset",

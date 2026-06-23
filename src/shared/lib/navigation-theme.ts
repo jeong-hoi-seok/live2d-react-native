@@ -1,17 +1,19 @@
 import { DarkTheme } from "@react-navigation/native";
 
-export const APP_BACKGROUND = "#1a1a1a";
-export const APP_SURFACE = "#1f1f1f";
+import { DESIGN_COLORS } from "./design-system";
+
+export const APP_BACKGROUND = DESIGN_COLORS.background;
+export const APP_SURFACE = DESIGN_COLORS.surfaceContainer;
 
 export const APP_DARK_THEME = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    primary: "#dadada",
+    primary: DESIGN_COLORS.primary,
     background: APP_BACKGROUND,
     card: APP_SURFACE,
-    text: "#dadada",
-    border: "#2a2a2a",
-    notification: "#ef4444",
+    text: DESIGN_COLORS.onSurface,
+    border: DESIGN_COLORS.outlineVariant,
+    notification: DESIGN_COLORS.error,
   },
 };

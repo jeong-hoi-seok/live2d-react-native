@@ -1,0 +1,62 @@
+export const DESIGN_COLORS = {
+  surface: "#101415",
+  surfaceDim: "#101415",
+  surfaceBright: "#363a3b",
+  surfaceContainerLowest: "#0b0f10",
+  surfaceContainerLow: "#191c1e",
+  surfaceContainer: "#1d2022",
+  surfaceContainerHigh: "#272a2c",
+  surfaceContainerHighest: "#323537",
+  onSurface: "#e0e3e5",
+  onSurfaceVariant: "#e3beb7",
+  inverseSurface: "#e0e3e5",
+  inverseOnSurface: "#2d3133",
+  outline: "#aa8982",
+  outlineVariant: "#5a413b",
+  surfaceTint: "#ffb4a4",
+  primary: "#ffb4a4",
+  onPrimary: "#630e00",
+  primaryContainer: "#ff5f3d",
+  onPrimaryContainer: "#5e0d00",
+  inversePrimary: "#b3290b",
+  secondary: "#c6c6cc",
+  onSecondary: "#2f3035",
+  secondaryContainer: "#47494e",
+  onSecondaryContainer: "#b7b8be",
+  tertiary: "#c3c6ce",
+  onTertiary: "#2d3137",
+  tertiaryContainer: "#91959c",
+  onTertiaryContainer: "#2a2e34",
+  error: "#ffb4ab",
+  onError: "#690005",
+  errorContainer: "#93000a",
+  onErrorContainer: "#ffdad6",
+  background: "#101415",
+  onBackground: "#e0e3e5",
+  surfaceVariant: "#323537",
+} as const;
+
+export const DESIGN_RADIUS = {
+  sm: 4,
+  default: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  full: 9999,
+} as const;
+
+export const DESIGN_SPACING = {
+  base: 8,
+  containerPadding: 20,
+  gutter: 16,
+  stackSm: 4,
+  stackMd: 12,
+  stackLg: 24,
+} as const;
+
+export const DESIGN_FONT_FAMILY = {
+  regular: "Pretendard-Regular",
+  medium: "Pretendard-Medium",
+  semiBold: "Pretendard-SemiBold",
+  bold: "Pretendard-Bold",
+} as const;

@@ -1,12 +1,12 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { ThemeProvider } from "@react-navigation/native";
 import { Icon, Label, NativeTabs, VectorIcon } from "expo-router/unstable-native-tabs";
-import { Platform } from "react-native";
 
+import { DESIGN_COLORS } from "@/shared/lib/design-system";
 import { APP_DARK_THEME, APP_SURFACE } from "@/shared/lib/navigation-theme";
 
-const TAB_ICON_ACTIVE = "#dadada";
-const TAB_ICON_INACTIVE = "#7f7f7f";
+const TAB_ICON_ACTIVE = DESIGN_COLORS.primary;
+const TAB_ICON_INACTIVE = DESIGN_COLORS.secondary;
 
 export default function TabsLayout() {
   return (
@@ -19,9 +19,9 @@ export default function TabsLayout() {
           default: TAB_ICON_INACTIVE,
           selected: TAB_ICON_ACTIVE,
         }}
-        labelStyle={{ color: TAB_ICON_INACTIVE }}
+        labelStyle={{ color: TAB_ICON_INACTIVE, fontFamily: "Pretendard-Regular" }}
         blurEffect="systemChromeMaterialDark"
-        backgroundColor={Platform.OS === "ios" ? null : APP_SURFACE}
+        backgroundColor={APP_SURFACE}
       >
         <NativeTabs.Trigger name="index">
           <Label hidden>홈</Label>
