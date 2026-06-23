@@ -80,20 +80,3 @@ pnpm lint
 pnpm typecheck
 pnpm format
 ```
-
-## 📚 문서
-
-- `agent.md`: AI 작업 지침
-- `docs/ai-wiki-guide.md`: AI Wiki 작성 및 갱신 가이드
-- `docs/commit-convention.md`: 커밋 컨벤션
-- `docs/naming-convention.md`: 네이밍 컨벤션
-- `wiki/`: AI 에이전트가 참조하고 기록하는 전용 지식 문서
-
-## 📝 작업 규칙 요약
-
-- 모든 답변과 작업 보고는 한국어로 작성합니다.
-- 스타일링은 NativeWind를 우선 사용합니다.
-- Expo 버전은 `54.0.2`로 고정합니다.
-- Live2D 모델 원본 디렉토리와 manifest 파일명은 가능한 변경하지 않습니다.
-- 새 파일과 디렉토리는 kebab-case를 사용합니다.
-- AI가 반복 참조할 지식은 `wiki/`에 기록합니다.
