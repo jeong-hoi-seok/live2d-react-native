@@ -1,51 +1,50 @@
-import { Tabs } from "expo-router";
-import HomeIcon from "../../../assets/icons/home.svg";
-import PersonIcon from "../../../assets/icons/person.svg";
-import SmsIcon from "../../../assets/icons/sms.svg";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { ThemeProvider } from "@react-navigation/native";
+import { Icon, Label, NativeTabs, VectorIcon } from "expo-router/unstable-native-tabs";
+import { Platform } from "react-native";
 
-const ACTIVE = "#dadada";
-const INACTIVE = "#7f7f7f";
+import { APP_DARK_THEME, APP_SURFACE } from "@/shared/lib/navigation-theme";
+
+const TAB_ICON_ACTIVE = "#dadada";
+const TAB_ICON_INACTIVE = "#7f7f7f";
 
 export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: ACTIVE,
-        tabBarInactiveTintColor: INACTIVE,
-        tabBarIconStyle: {
-          marginBottom: 4,
-        },
-        tabBarStyle: {
-          backgroundColor: "#1f1f1f",
-          paddingTop: 8,
-          borderTopWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "홈",
-          tabBarIcon: ({ color, size }) => <HomeIcon width={size} height={size} color={color} />,
+    <ThemeProvider value={APP_DARK_THEME}>
+      <NativeTabs
+        minimizeBehavior="onScrollDown"
+        labelVisibilityMode="unlabeled"
+        tintColor={TAB_ICON_ACTIVE}
+        iconColor={{
+          default: TAB_ICON_INACTIVE,
+          selected: TAB_ICON_ACTIVE,
         }}
-      />
-      <Tabs.Screen
-        name="chat"
-        options={{
-          title: "대화",
-          tabBarIcon: ({ color, size }) => <SmsIcon width={size} height={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "MY",
-          tabBarIcon: ({ color, size }) => <PersonIcon width={size} height={size} color={color} />,
-        }}
-      />
-    </Tabs>
+        labelStyle={{ color: TAB_ICON_INACTIVE }}
+        blurEffect="systemChromeMaterialDark"
+        backgroundColor={Platform.OS === "ios" ? null : APP_SURFACE}
+      >
+        <NativeTabs.Trigger name="index">
+          <Label hidden>홈</Label>
+          <Icon
+            sf={{ default: "house", selected: "house.fill" }}
+            androidSrc={<VectorIcon family={MaterialCommunityIcons} name="home-outline" />}
+          />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="chat">
+          <Label hidden>대화</Label>
+          <Icon
+            sf={{ default: "message", selected: "message.fill" }}
+            androidSrc={<VectorIcon family={MaterialCommunityIcons} name="message-outline" />}
+          />
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="profile">
+          <Label hidden>MY</Label>
+          <Icon
+            sf={{ default: "person", selected: "person.fill" }}
+            androidSrc={<VectorIcon family={MaterialCommunityIcons} name="account-outline" />}
+          />
+        </NativeTabs.Trigger>
+      </NativeTabs>
+    </ThemeProvider>
   );
 }

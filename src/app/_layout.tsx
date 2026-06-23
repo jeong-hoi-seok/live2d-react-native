@@ -1,5 +1,6 @@
 import "../../global.css";
 
+import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -8,6 +9,7 @@ import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { FONT_ASSETS } from "@/shared/lib/fonts";
+import { APP_BACKGROUND, APP_DARK_THEME } from "@/shared/lib/navigation-theme";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,8 +28,15 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="auto" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <ThemeProvider value={APP_DARK_THEME}>
+        <StatusBar style="light" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: APP_BACKGROUND },
+          }}
+        />
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

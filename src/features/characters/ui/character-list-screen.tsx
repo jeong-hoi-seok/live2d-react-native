@@ -1,5 +1,3 @@
-import MaskedView from "@react-native-masked-view/masked-view";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { type Href, Link } from "expo-router";
 import { Dimensions, Image, Pressable, ScrollView, Text, View } from "react-native";
@@ -39,15 +37,11 @@ export function CharacterListScreen() {
                       <Image source={c.thumbnail} className="h-full w-full" resizeMode="cover" />
                     ) : null}
 
-                    {/* 그라디언트 마스크 블러 */}
-                    <MaskedView
-                      style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "50%" }}
-                      maskElement={
-                        <LinearGradient colors={["transparent", "black"]} style={{ flex: 1 }} />
-                      }
-                    >
-                      <BlurView intensity={60} tint="dark" style={{ flex: 1 }} />
-                    </MaskedView>
+                    <LinearGradient
+                      colors={["transparent", "rgba(0,0,0,0.55)", "rgba(0,0,0,0.88)"]}
+                      locations={[0, 0.45, 1]}
+                      style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "55%" }}
+                    />
 
                     <View className="absolute bottom-0 left-0 right-0 items-center pb-4 px-6">
                       <Text className="text-2xl font-bold text-white mb-1">{c.name}</Text>

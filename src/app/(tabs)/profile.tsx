@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { BellRing, ChevronRight, Headphones, Megaphone, Plus, Sparkles } from "lucide-react-native";
 import type { LucideIcon } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -34,7 +35,11 @@ export default function ProfileTab() {
         </Section>
 
         <Section title="알림">
-          <Row icon={BellRing} label="알림 설정" onPress={() => {}} />
+          <Row
+            icon={BellRing}
+            label="알림 설정"
+            onPress={() => router.push("/settings/notifications")}
+          />
         </Section>
 
         <Text className="mt-8 text-center text-xs text-[#5a5a5a]">v0.1.0</Text>

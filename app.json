@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "live2d-react-native",
-    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#1a1a1a",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
